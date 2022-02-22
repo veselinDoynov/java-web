@@ -79,14 +79,15 @@ public class InstructorEndToEndTest {
     public void updateInstructor() throws Exception {
         String name = "ve";
         Instructor instructor = instructorService.getByName(name);
-        String postData = "{\"firstName\":\"" + name + "\"}";
+        String firstNameUpdated = "Updated first name";
+        String postData = "{\"firstName\":\"" + firstNameUpdated + "\"}";
 
 
         this.mockMvc.perform(MockMvcRequestBuilders.patch(BASE_URL + "/{id}", instructor.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(postData))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName", is(name)))
+                .andExpect(jsonPath("$.firstName", is(firstNameUpdated)))
                 .andExpect(jsonPath("$.lastName", is(instructor.getLastName())))
                 .andExpect(jsonPath("$.email", is(instructor.getEmail())));
         ;
