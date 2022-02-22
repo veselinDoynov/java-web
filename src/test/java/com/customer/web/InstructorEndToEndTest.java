@@ -4,11 +4,13 @@ import com.customer.web.entity.Instructor;
 import com.customer.web.services.InstructorService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -21,9 +23,9 @@ import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
+@ExtendWith(SpringExtension.class)
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {WebApplication.class})
+@SpringBootTest
 @Transactional
 @AutoConfigureMockMvc //need this in Spring Boot test
 public class InstructorEndToEndTest {
@@ -57,7 +59,15 @@ public class InstructorEndToEndTest {
                 .andExpect(jsonPath("$.lastName", is("Doinov")))
                 .andExpect(jsonPath("$.email", is("veselin_doynov@abv.bg")))
         ;
+    }
 
+    @Test
+    public void getInstructorByNameWrongUrl() throws Exception {
+
+        String name = "ve";
+        this.mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/name/v2/{firstName}", name)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -94,11 +104,53 @@ public class InstructorEndToEndTest {
     }
 
     @Test
+    public void updateInstructorNotFound() throws Exception {
+        String name = "ve";
+        Instructor instructor = instructorService.getByName(name);
+        String firstNameUpdated = "Updated first name";
+        String postData = "{\"firstName\":\"" + firstNameUpdated + "\"}";
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders.patch(BASE_URL + "/{id}", 69696)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(postData))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void updateInstructorBadRequest() throws Exception {
+        String name = "ve";
+        Instructor instructor = instructorService.getByName(name);
+        String firstNameUpdated = "Updated first name";
+        String postData = "{\"firstName\":\"" + firstNameUpdated + "\"}";
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders.patch(BASE_URL + "/{id}", "not an integer")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(postData))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void deleteInstructor() throws Exception {
         String name = "ve";
         Instructor instructor = instructorService.getByName(name);
         this.mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/{id}", instructor.getId()))
                 .andExpect(status().isOk())
+        ;
+    }
+
+    @Test
+    public void deleteInstructorNotFound() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/{id}", 6969))
+                .andExpect(status().isNotFound())
+        ;
+    }
+
+    @Test
+    public void deleteInstructorBadRequest() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/{id}", "not an integer"))
+                .andExpect(status().isBadRequest())
         ;
     }
 

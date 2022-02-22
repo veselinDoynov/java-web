@@ -46,7 +46,8 @@ public class InstructorService {
     public Instructor updateInstructor(Integer id, Instructor instructor) {
 
         Instructor existingInstructor = this.findByInstructorId(id);
-        if (instructor == null) {
+
+        if (existingInstructor == null) {
             return null;
         }
 
