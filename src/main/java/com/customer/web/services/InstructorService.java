@@ -59,10 +59,15 @@ public class InstructorService {
             existingInstructor.setLastName(instructor.getLastName());
         }
 
-        return this.saveInstructor(existingInstructor);
+        Instructor updatedInstructor = instructorRepository.saveAndFlush(existingInstructor);
+
+        System.out.println(updatedInstructor);
+
+        return updatedInstructor;
     }
 
-    public void deleteInstructor(Integer id) {
+    public String deleteInstructor(Integer id) {
         instructorRepository.deleteById(id);
+        return "Success";
     }
 }

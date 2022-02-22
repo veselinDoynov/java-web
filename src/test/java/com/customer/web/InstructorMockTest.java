@@ -1,49 +1,129 @@
 package com.customer.web;
 
-import com.customer.web.controllers.InstructorController;
 import com.customer.web.entity.Instructor;
+import com.customer.web.repositories.InstructorRepository;
 import com.customer.web.services.InstructorService;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import java.util.Arrays;
-import java.util.List;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.core.Is.is;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doReturn;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(InstructorController.class)
+@SpringBootTest
 public class InstructorMockTest {
 
     @Autowired
-    private MockMvc mvc;
-
-    @MockBean
     private InstructorService instructorService;
 
-    public String BASE_URL = "/api/v1/instructor";
+    @MockBean
+    private InstructorRepository instructorRepository;
 
     @Test
     public void listInstructorsMock() throws Exception {
 
-        Instructor test = new Instructor("test", "testov", "test@testov.com");
-        List<Instructor> instructors = Arrays.asList(test);
-        given(this.instructorService.getOrderedInstructors()).willReturn(instructors);
+        List<Instructor> instructors = new ArrayList<>();
+        instructors.add(new Instructor("test", "testov", "test@testov.com"));
+        instructors.add(new Instructor("test1", "testov1", "test1@testov.com"));
+        given(this.instructorRepository.getOrderedInstructors()).willReturn(instructors);
 
-        this.mvc.perform(MockMvcRequestBuilders.get(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].firstName", is(test.getFirstName())));
+        Collection<Instructor> result = this.instructorService.getOrderedInstructors();
+        Assertions.assertTrue(result.containsAll(instructors));
+        Assertions.assertEquals(instructors.toArray()[0], result.toArray()[0]);
+        Assertions.assertEquals(instructors.toArray()[1], result.toArray()[1]);
+    }
+
+    @Test
+    public void getInstructor() throws Exception {
+
+        Instructor instructor = new Instructor("test", "testov", "test@testov.com");
+        doReturn(Optional.of(instructor)).when(this.instructorRepository).findById(instructor.getId());
+
+        Instructor result = this.instructorService.findByInstructorId(instructor.getId());
+        Assertions.assertEquals(instructor.getLastName(), result.getLastName());
+    }
+
+    @Test
+    public void getInstructorNotFound() throws Exception {
+
+        Instructor instructor = new Instructor("test", "testov", "test@testov.com");
+        doReturn(Optional.empty()).when(this.instructorRepository).findById(instructor.getId());
+
+        Instructor result = this.instructorService.findByInstructorId(instructor.getId());
+        Assertions.assertNull(result);
+    }
+
+    @Test
+    public void getInstructorByName() throws Exception {
+
+        Instructor instructor = new Instructor("test", "testov", "test@testov.com");
+        given(this.instructorRepository.getInstructorByFirstName(instructor.getFirstName())).willReturn(instructor);
+
+        Instructor result = this.instructorService.getByName(instructor.getFirstName());
+        Assertions.assertEquals(instructor.getLastName(), result.getLastName());
+    }
+
+    @Test
+    public void getInstructorByNameNotFound() throws Exception {
+
+        Instructor instructor = new Instructor("test", "testov", "test@testov.com");
+        given(this.instructorRepository.getInstructorByFirstName(instructor.getFirstName())).willReturn(null);
+
+        Instructor result = this.instructorService.getByName(instructor.getFirstName());
+        Assertions.assertNull(result);
+    }
+
+    @Test
+    public void createInstructor() throws Exception {
+        Instructor instructor = new Instructor("test", "testov", "test@testov.com");
+        given(this.instructorRepository.saveAndFlush(instructor)).willReturn(instructor);
+
+        Instructor result = this.instructorService.saveInstructor(instructor);
+        Assertions.assertEquals(instructor, result);
+    }
+
+    @Test
+    @Ignore
+    public void updateInstructor() throws Exception {
+        Instructor instructor = new Instructor("test", "testov", "test@testov.com");
+        Instructor instructorUpdateData = new Instructor("test1", "testov1", "test@testov.com");
+
+        doReturn(Optional.of(instructor)).when(this.instructorRepository).findById(instructor.getId());
+        doReturn(Optional.of(instructorUpdateData)).when(this.instructorRepository).saveAndFlush(instructorUpdateData);
+
+        Instructor result = this.instructorService.updateInstructor(instructor.getId(), instructorUpdateData);
+        Assertions.assertEquals(instructorUpdateData.getFirstName(), result.getFirstName());
+        Assertions.assertEquals(instructorUpdateData.getLastName(), result.getLastName());
+    }
+
+    @Test
+    public void updateInstructorNotFound() throws Exception {
+        Instructor instructor = new Instructor("test", "testov", "test@testov.com");
+        Instructor instructorUpdateData = new Instructor("test1", "testov1", "test@testov.com");
+
+        doReturn(Optional.empty()).when(this.instructorRepository).findById(instructor.getId());
+
+        Instructor result = this.instructorService.updateInstructor(instructor.getId(), instructorUpdateData);
+        Assertions.assertNull(result);
+    }
+
+    public void deleteInstructor() throws Exception {
+
+        Instructor instructor = new Instructor("test", "testov", "test@testov.com");
+        doReturn(Optional.of(instructor)).when(this.instructorRepository).deleteById(instructor.getId());
+        String result = this.instructorService.deleteInstructor(instructor.getId());
+        Assertions.assertEquals("Success", result);
     }
 }
