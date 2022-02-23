@@ -1,6 +1,7 @@
 package com.customer.web.services;
 
 import com.customer.web.entity.Instructor;
+import com.customer.web.publishers.InstructorPublisher;
 import com.customer.web.repositories.InstructorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,8 +17,15 @@ public class InstructorService {
     @Autowired
     private InstructorRepository instructorRepository;
 
+    @Autowired
+    private InstructorPublisher instructorPublisher;
+
     public Collection<Instructor> getOrderedInstructors() {
-        return instructorRepository.getOrderedInstructors();
+
+        Collection<Instructor> instructors = instructorRepository.getOrderedInstructors();
+        instructorPublisher.publishInstructorList(instructors.toString());
+
+        return instructors;
     }
 
     public Collection<Instructor> getOrderedInstructorsFilteredByCoursePresents(boolean havingCourse) {
@@ -33,7 +41,9 @@ public class InstructorService {
     }
 
     public Instructor getByName(String firstName) {
-        return instructorRepository.getInstructorByFirstName(firstName);
+        Instructor instructor = instructorRepository.getInstructorByFirstName(firstName);
+        instructorPublisher.publishInstructorGet(instructor.toString());
+        return instructor;
     }
 
     public Instructor findByInstructorId(Integer id) {
