@@ -101,11 +101,8 @@ public class InstructorMockTest {
         Instructor instructor = new Instructor("test", "testov", "test@testov.com");
         Instructor instructorUpdateData = new Instructor("test1", "testov1", "test@testov.com");
 
-        Mockito.when(this.instructorRepository.findById(instructor.getId())).thenReturn(Optional.of(instructor));
-        Mockito.when(this.instructorRepository.saveAndFlush(instructorUpdateData)).thenReturn(instructorUpdateData);
-
-        //doReturn(Optional.of(instructor)).when(this.instructorRepository).findById(instructor.getId());
-        //doReturn(Optional.of(instructorUpdateData)).when(this.instructorRepository).saveAndFlush(instructorUpdateData);
+        doReturn(Optional.of(instructor)).when(this.instructorRepository).findById(instructor.getId());
+        doReturn(Optional.of(instructorUpdateData)).when(this.instructorRepository).saveAndFlush(instructorUpdateData);
 
         Instructor result = this.instructorService.updateInstructor(instructor.getId(), instructorUpdateData);
         Assertions.assertEquals(instructorUpdateData.getFirstName(), result.getFirstName());
