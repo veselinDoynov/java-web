@@ -14,6 +14,17 @@ public interface InstructorRepository extends JpaRepository<Instructor, Integer>
     @Query(value = "SELECT * FROM instructor Order by first_name", nativeQuery = true)
     Collection<Instructor> getOrderedInstructors();
 
+    @Query(value = "SELECT DISTINCT instructor.* FROM instructor \n" +
+            "            Join course on course.instructor_id = instructor.id\n" +
+            "            Order by instructor.first_name" , nativeQuery = true)
+    Collection<Instructor> getOrderedInstructorsHavingCourse();
+
+    @Query(value = "SELECT DISTINCT instructor.* FROM instructor \n" +
+            "            Left Join course on course.instructor_id = instructor.id\n" +
+            "            Where course.instructor_id is null\n" +
+            "            Order by instructor.first_name" , nativeQuery = true)
+    Collection<Instructor> getOrderedInstructorsNotHavingCourse();
+
     @Query(
             value = "SELECT * FROM instructor Order by first_name",
             countQuery = "SELECT count(*) FROM instructor",

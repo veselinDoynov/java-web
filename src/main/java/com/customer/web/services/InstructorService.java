@@ -20,6 +20,13 @@ public class InstructorService {
         return instructorRepository.getOrderedInstructors();
     }
 
+    public Collection<Instructor> getOrderedInstructorsFilteredByCoursePresents(boolean havingCourse) {
+        if (havingCourse) {
+            return instructorRepository.getOrderedInstructorsHavingCourse();
+        }
+        return instructorRepository.getOrderedInstructorsNotHavingCourse();
+    }
+
     public Page<Instructor> getInstructorsPaginated(Pageable pageable) {
 
         return instructorRepository.getOrderedInstructorsPaginated(pageable);
