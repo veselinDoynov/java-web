@@ -7,6 +7,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -100,8 +101,11 @@ public class InstructorMockTest {
         Instructor instructor = new Instructor("test", "testov", "test@testov.com");
         Instructor instructorUpdateData = new Instructor("test1", "testov1", "test@testov.com");
 
-        doReturn(Optional.of(instructor)).when(this.instructorRepository).findById(instructor.getId());
-        doReturn(Optional.of(instructorUpdateData)).when(this.instructorRepository).saveAndFlush(instructorUpdateData);
+        Mockito.when(this.instructorRepository.findById(instructor.getId())).thenReturn(Optional.of(instructor));
+        Mockito.when(this.instructorRepository.saveAndFlush(instructorUpdateData)).thenReturn(instructorUpdateData);
+
+        //doReturn(Optional.of(instructor)).when(this.instructorRepository).findById(instructor.getId());
+        //doReturn(Optional.of(instructorUpdateData)).when(this.instructorRepository).saveAndFlush(instructorUpdateData);
 
         Instructor result = this.instructorService.updateInstructor(instructor.getId(), instructorUpdateData);
         Assertions.assertEquals(instructorUpdateData.getFirstName(), result.getFirstName());
