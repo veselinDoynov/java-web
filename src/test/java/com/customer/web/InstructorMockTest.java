@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -98,8 +97,7 @@ public class InstructorMockTest {
         Instructor instructorUpdateData = new Instructor("test1", "testov1", "test@testov.com");
 
         doReturn(Optional.of(instructor)).when(this.instructorRepository).findById(instructor.getId());
-
-        when(this.instructorRepository.saveAndFlush(any(Instructor.class))).thenReturn(instructorUpdateData);
+        doReturn(instructorUpdateData).when(this.instructorRepository).saveAndFlush(any(Instructor.class));
 
         Instructor result = this.instructorService.updateInstructor(instructor.getId(), instructorUpdateData);
         Assertions.assertEquals(instructorUpdateData.getFirstName(), result.getFirstName());
