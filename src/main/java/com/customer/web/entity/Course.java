@@ -1,16 +1,12 @@
 package com.customer.web.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name="course")
-//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Course {
 
 	@Id

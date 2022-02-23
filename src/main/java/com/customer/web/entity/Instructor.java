@@ -1,6 +1,6 @@
 package com.customer.web.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.customer.web.listeners.AuditTrailListener;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name="instructor")
-//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@EntityListeners(AuditTrailListener.class)
 public class Instructor {
 
 	@Id
