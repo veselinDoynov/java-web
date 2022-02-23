@@ -3,24 +3,21 @@ package com.customer.web;
 import com.customer.web.entity.Instructor;
 import com.customer.web.repositories.InstructorRepository;
 import com.customer.web.services.InstructorService;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
+import static org.mockito.ArgumentMatchers.any;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -96,13 +93,13 @@ public class InstructorMockTest {
     }
 
     @Test
-    @Ignore
     public void updateInstructor() throws Exception {
         Instructor instructor = new Instructor("test", "testov", "test@testov.com");
         Instructor instructorUpdateData = new Instructor("test1", "testov1", "test@testov.com");
 
         doReturn(Optional.of(instructor)).when(this.instructorRepository).findById(instructor.getId());
-        doReturn(Optional.of(instructorUpdateData)).when(this.instructorRepository).saveAndFlush(instructorUpdateData);
+
+        when(this.instructorRepository.saveAndFlush(any(Instructor.class))).thenReturn(instructorUpdateData);
 
         Instructor result = this.instructorService.updateInstructor(instructor.getId(), instructorUpdateData);
         Assertions.assertEquals(instructorUpdateData.getFirstName(), result.getFirstName());
