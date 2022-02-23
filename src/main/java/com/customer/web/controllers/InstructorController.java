@@ -8,8 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
-import java.util.Optional;
-
 
 @RestController
 @RequestMapping("/api/v1/instructor")
@@ -19,9 +17,8 @@ public class InstructorController {
     private InstructorService instructorService;
 
     @GetMapping
-    public Collection<Instructor> list(@RequestParam(required = false) Boolean hasCourses)
-    {
-        if(hasCourses != null) {
+    public Collection<Instructor> list(@RequestParam(required = false) Boolean hasCourses) {
+        if (hasCourses != null) {
             return instructorService.getOrderedInstructorsFilteredByCoursePresents(hasCourses);
         }
         return instructorService.getOrderedInstructors();
