@@ -15,7 +15,7 @@ public class CourseService {
     @Autowired
     private CourseRepository courseRepository;
 
-    public Collection <Course> list() {
+    public Collection<Course> list() {
 
         return courseRepository.findAll();
     }
@@ -28,5 +28,18 @@ public class CourseService {
         }
 
         return null;
+    }
+
+    public Course findCourseByTitle(String title) {
+        return courseRepository.findByTitle(title);
+    }
+
+    public Course saveCourse(Course course) {
+        return courseRepository.saveAndFlush(course);
+    }
+
+    public String deleteCourse(Integer id) {
+        courseRepository.deleteById(id);
+        return "Success";
     }
 }

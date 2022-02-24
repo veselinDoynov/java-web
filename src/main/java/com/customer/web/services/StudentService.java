@@ -1,6 +1,7 @@
 package com.customer.web.services;
 
 import com.customer.web.entity.Course;
+import com.customer.web.entity.Instructor;
 import com.customer.web.entity.Student;
 import com.customer.web.repositories.CourseRepository;
 import com.customer.web.repositories.StudentRepository;
@@ -44,5 +45,14 @@ public class StudentService {
 
     public void detachCourseFromStudent(Integer courseId, Integer studentId) {
         studentRepository.detachCourseFromStudent(courseId, studentId);
+    }
+
+    public Student saveStudent(Student student) {
+        return studentRepository.saveAndFlush(student);
+    }
+
+    public String deleteStudent(Integer id) {
+        studentRepository.deleteById(id);
+        return "Success";
     }
 }

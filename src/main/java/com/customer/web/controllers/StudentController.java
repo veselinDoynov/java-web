@@ -3,6 +3,7 @@ package com.customer.web.controllers;
 import com.customer.web.controllers.exception.CustomNotFoundException;
 
 import com.customer.web.entity.Course;
+import com.customer.web.entity.Instructor;
 import com.customer.web.entity.Student;
 import com.customer.web.services.CourseService;
 import com.customer.web.services.StudentService;
@@ -76,5 +77,19 @@ public class StudentController {
         student.setCustomCourse(studentService.getStudentCourses(student.getId()));
 
         return student;
+    }
+
+    @PostMapping
+    public Student create(@RequestBody final Student student) {
+        return studentService.saveStudent(student);
+    }
+
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    public void delete(@PathVariable Integer id) {
+        Student student = studentService.findStudentById(id);
+        if (student == null) {
+            throw new CustomNotFoundException("Student id not found - " + id);
+        }
+        studentService.deleteStudent(id);
     }
 }
