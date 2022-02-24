@@ -35,7 +35,12 @@ public class InstructorController {
     @RequestMapping("/name/{firstName}")
     public Instructor getByName(@PathVariable String firstName) {
 
-        return instructorService.getByName(firstName);
+        Instructor instructor = instructorService.getByName(firstName);
+        if (instructor == null) {
+            throw new CustomNotFoundException("Instructor with name:  " + firstName);
+        }
+
+        return instructor;
     }
 
     @GetMapping
