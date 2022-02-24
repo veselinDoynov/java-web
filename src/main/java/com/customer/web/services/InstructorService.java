@@ -42,6 +42,7 @@ public class InstructorService {
 
     public Instructor getByName(String firstName) {
         Instructor instructor = instructorRepository.getInstructorByFirstName(firstName);
+
         instructorPublisher.publishInstructorGet(instructor != null ? instructor.toString(): null);
         return instructor;
     }

@@ -34,6 +34,8 @@ public class Student {
 	@JsonIgnore
 	private List<Course> courses;
 
+	@Transient
+	private List<Object> customCourse;
 	
 	public Student() {
 		
@@ -83,6 +85,14 @@ public class Student {
 
 	public void setCourses(List<Course> courses) {
 		this.courses = courses;
+	}
+
+	public List<Object> getCustomCourse() {
+		return customCourse;
+	}
+
+	public void setCustomCourse(List<Object> customCourse) {
+		this.customCourse = customCourse;
 	}
 
 	@Override
