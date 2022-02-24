@@ -1,9 +1,11 @@
-package com.customer.web.course;
+package com.customer.web.student;
 
 import com.customer.web.entity.Course;
 import com.customer.web.entity.Instructor;
+import com.customer.web.entity.Student;
 import com.customer.web.services.CourseService;
 import com.customer.web.services.InstructorService;
+import com.customer.web.services.StudentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,12 +18,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import javax.transaction.Transactional;
 
+import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc
-public class CourseEndToEndTest {
+public class StudentEndToEndTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -40,38 +41,39 @@ public class CourseEndToEndTest {
     private CourseService courseService;
 
     @Autowired
-    private InstructorService instructorService;
+    private StudentService studentService;
 
-    public String BASE_URL = "/api/v1/course";
+    public String BASE_URL = "/api/v1/student";
 
     @Test
-    public void listCourses() throws Exception {
+    public void listStudents() throws Exception {
 
-        Course course = courseService.saveCourse(new Course("some custom course"));
-        Course courseTwo = courseService.saveCourse(new Course("some custom course 2"));
+        Student student =  new Student("Student", "Javarov", "stu@dent.com");
+
         this.mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void getCourse() throws Exception {
-        Course course = courseService.saveCourse(new Course("some custom course"));
-        this.mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{id}", course.getId())
+    public void getStudent() throws Exception {
+        Student student =  new Student("Student", "Javarov", "stu@dent.com");
+        studentService.saveStudent(student);
+        this.mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{id}", student.getId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title", is(course.getTitle())));
+                .andExpect(jsonPath("$.email", is(student.getEmail())));
     }
 
     @Test
-    public void getCourseNotFound() throws Exception {
+    public void getStudentNotFound() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{id}",12312312)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    public void getCourseBadData() throws Exception {
+    public void getStudentBadData() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{id}","not an integer")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -79,129 +81,120 @@ public class CourseEndToEndTest {
 
 
     @Test
-    public void deleteCourse() throws Exception {
-        Course course = courseService.saveCourse(new Course("some custom course"));
-        this.mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/{id}", course.getId()))
+    public void deleteStudent() throws Exception {
+        Student student =  new Student("Student", "Javarov", "stu@dent.com");
+        studentService.saveStudent(student);
+        this.mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/{id}", student.getId()))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void deleteCourseNotFound() throws Exception {
+    public void deleteStudentNotFound() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/{id}", 6969))
                 .andExpect(status().isNotFound())
         ;
     }
 
     @Test
-    public void deleteCourseBadRequest() throws Exception {
+    public void deleteStudentBadRequest() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/{id}", "not an integer"))
                 .andExpect(status().isBadRequest())
         ;
     }
 
     @Test
-    public void addCourse() throws Exception {
+    public void addStudent() throws Exception {
 
-        Course course = new Course("some new course on java");
+        Student student =  new Student("Student", "Javarov", "stu@dent.com");
         this.mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(course)))
+                        .content(asJsonString(student)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title", is(course.getTitle())));
+                .andExpect(jsonPath("$.email", is(student.getEmail())));
     }
 
     @Test
-    public void addCourseExists() throws Exception {
+    public void attachCourseToStudent() throws Exception {
 
         Course course = this.courseService.saveCourse(new Course("some new course on java"));
-
-        this.mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(course)))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    public void attachInstructor() throws Exception {
-
-        Course course = this.courseService.saveCourse(new Course("some new course on java"));
-        Instructor instructor = this.instructorService.saveInstructor(new Instructor("Instructor", "Java", "java@spring.com"));
+        Student student = this.studentService.saveStudent(new Student("Student", "Javarov", "stu@dent.com"));
 
         Map<String, Object> postData = new HashMap<>();
-        postData.put("instructor_id", instructor.getId());
+        postData.put("course_id", course.getId());
 
-        this.mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/{id}/instructor/attach", course.getId())
+        this.mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/{id}/course/attach", student.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(postData)))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void attachInstructorCourseNotFound() throws Exception {
+    public void attachStudentNotFound() throws Exception {
 
-        Instructor instructor = this.instructorService.saveInstructor(new Instructor("Instructor", "Java", "java@spring.com"));
+        Course course = this.courseService.saveCourse(new Course("some new course on java"));
 
         Map<String, Object> postData = new HashMap<>();
-        postData.put("instructor_id", instructor.getId());
+        postData.put("course_id", course.getId());
 
-        this.mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/{id}/instructor/attach", 12312323)
+        this.mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/{id}/course/attach", 12312323)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(postData)))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    public void attachInstructorNotFound() throws Exception {
+    public void attachCourseNotFound() throws Exception {
 
-        Course course = this.courseService.saveCourse(new Course("some new course on java"));
+        Student student = this.studentService.saveStudent(new Student("Student", "Javarov", "stu@dent.com"));
 
         Map<String, Object> postData = new HashMap<>();
-        postData.put("instructor_id", 1123123213);
+        postData.put("course_id", 1123123213);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/{id}/instructor/attach", course.getId())
+        this.mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/{id}/course/attach", student.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(postData)))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    public void detachInstructor() throws Exception {
+    public void detachCourse() throws Exception {
 
         Course course = this.courseService.saveCourse(new Course("some new course on java"));
-        Instructor instructor = this.instructorService.saveInstructor(new Instructor("Instructor", "Java", "java@spring.com"));
+        Student student = this.studentService.saveStudent(new Student("Student", "Javarov", "stu@dent.com"));
 
         Map<String, Object> postData = new HashMap<>();
-        postData.put("instructor_id", instructor.getId());
+        postData.put("course_id", course.getId());
 
-        this.mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/{id}/instructor/detach", course.getId())
+        this.mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/{id}/course/detach", student.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(postData)))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void detachInstructorCourseNotFound() throws Exception {
+    public void detachCourseNotFound() throws Exception {
 
-        Instructor instructor = this.instructorService.saveInstructor(new Instructor("Instructor", "Java", "java@spring.com"));
+        Student student = this.studentService.saveStudent(new Student("Student", "Javarov", "stu@dent.com"));
+
 
         Map<String, Object> postData = new HashMap<>();
-        postData.put("instructor_id", instructor.getId());
+        postData.put("course_id", 12312312);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/{id}/instructor/detach", 12312323)
+        this.mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/{id}/course/detach", student.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(postData)))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    public void detachInstructorNotFound() throws Exception {
+    public void detachCourseStudentNotFound() throws Exception {
 
         Course course = this.courseService.saveCourse(new Course("some new course on java"));
 
         Map<String, Object> postData = new HashMap<>();
-        postData.put("instructor_id", 1123123213);
+        postData.put("course_id", course.getId());
 
-        this.mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/{id}/instructor/detach", course.getId())
+        this.mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/{id}/course/detach", 1323233)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(postData)))
                 .andExpect(status().isNotFound());

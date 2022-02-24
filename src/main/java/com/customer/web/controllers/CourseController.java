@@ -39,10 +39,10 @@ public class CourseController {
     }
 
     @PostMapping
-    public Course create(@RequestBody final Course course) {
+    public Course create(@RequestBody final Course course) throws Exception {
         Course duplicateCourse = courseService.findCourseByTitle(course.getTitle());
         if(duplicateCourse != null) {
-            throw new CustomNotFoundException("Course with title - " + course.getTitle() + " already exits");
+            throw new Exception("Course with title - " + course.getTitle() + " already exits");
         }
         return courseService.saveCourse(course);
     }
