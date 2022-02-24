@@ -13,7 +13,6 @@ public class InstructorGetListener implements ApplicationListener<InstructorGetE
 
     @Override
     public void onApplicationEvent(InstructorGetEvent event) {
-        System.out.println("Instructor get - " + event.getMessage());
         log.info("[Instructor get] : " + event.getMessage());
     }
 }
