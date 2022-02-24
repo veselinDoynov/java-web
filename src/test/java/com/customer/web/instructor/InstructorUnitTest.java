@@ -1,4 +1,4 @@
-package com.customer.web;
+package com.customer.web.instructor;
 
 import com.customer.web.entity.Instructor;
 import com.customer.web.repositories.InstructorRepository;
