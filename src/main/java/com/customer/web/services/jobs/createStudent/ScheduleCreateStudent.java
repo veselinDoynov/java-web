@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 @Service
-public class CreateStudentSchedule {
+public class ScheduleCreateStudent {
 
     @Autowired
     private JobScheduler jobScheduler;
@@ -16,6 +16,7 @@ public class CreateStudentSchedule {
     private CreateStudentRun createStudentRun;
 
     public void run() {
-        jobScheduler.schedule(LocalDateTime.now().plusMinutes(1), () -> createStudentRun.execute("Dummy student will be created in a minute"));
+        int jobId = jobScheduler.hashCode();
+        jobScheduler.schedule(LocalDateTime.now().plusMinutes(1), () -> createStudentRun.execute("Dummy student will be created in a minute", jobId));
     }
 }

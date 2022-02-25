@@ -17,10 +17,10 @@ public class CreateStudentRun {
     private StudentService studentService;
 
     @Job(name = "Create a dummy student")
-    public void execute(String input) {
-        System.out.println("Job: " + input);
+    public void execute(String message, int jobId) {
+        System.out.println("Job: " + message);
 
-        Student student = new Student("Job","MadeMe", "job@made.me");
+        Student student = new Student("Job - " + jobId, "MadeMe", "job@made.me");
         student = studentService.saveStudent(student);
 
         System.out.println("Student created from this job : " + student.toString());

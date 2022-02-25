@@ -16,8 +16,8 @@ public class ExampleJobScheduleService {
     }
 
     @Job(name = "The sample job with variable %0")
-    public void execute(String input) {
-        System.out.println("Job:" + input);
+    public void execute(String message) {
+        System.out.println("Job:" + message);
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
