@@ -3,7 +3,7 @@ package com.customer.web.entity.web;
 import javax.persistence.*;
 
 @Entity
-@Table(name="review")
+@Table(name="review", schema = "java-instructor")
 public class Review {
 
 	@Id

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name="instructor")
+@Table(name="instructor", schema = "java-instructor")
 @EntityListeners(AuditTrailListener.class)
 public class Instructor {
 
