@@ -54,13 +54,17 @@ public class InstructorEndToEndTest {
 
         Instructor instructor = new Instructor("ins", "struc", "tor@dot.com");
         Course course = new Course("some new test course in list instructor");
-        course = courseService.saveCourse(course);
-        instructor.add(course);
         instructor = instructorService.saveInstructor(instructor);
+        course.setInstructor(instructor);
+        course = courseService.saveCourse(course);
+
 
         this.mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/?hasCourses=1")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                //.andExpect(jsonPath("$.*", hasItem(instructor)))
+
+        ;
     }
 
     @Test
