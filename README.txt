@@ -11,7 +11,7 @@
     hibernate,
     rest mvc,
     entities (relations),
-    config as a code,
+    config as a code (multiple db connections),
     jpa data,
     tests(end to end, unit),
     event/listeners,
