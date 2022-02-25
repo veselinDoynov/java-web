@@ -16,11 +16,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import javax.transaction.Transactional;
-
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.Map;
-
 import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,8 +27,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Transactional
 @AutoConfigureMockMvc
+@EnableTransactionManagement
+@Transactional("webTransactionManager")
 public class CourseEndToEndTest {
 
     @Autowired
