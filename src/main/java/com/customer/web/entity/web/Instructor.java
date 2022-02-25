@@ -1,6 +1,8 @@
-package com.customer.web.entity;
+package com.customer.web.entity.web;
 
 import com.customer.web.listeners.AuditTrailListener;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -29,8 +31,9 @@ public class Instructor {
 	@JoinColumn(name="instructor_detail_id")
 	private InstructorDetail instructorDetail;
 
-	@OneToMany(mappedBy="instructor",
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="instructor",
 			cascade= CascadeType.ALL)
+	@Fetch(value = FetchMode.SUBSELECT)
 	private List<Course> courses;
 
 
@@ -105,8 +108,6 @@ public class Instructor {
 		}
 
 		courses.add(tempCourse);
-
-		//tempCourse.setInstructor(this);
 	}
 }
 

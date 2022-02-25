@@ -1,8 +1,8 @@
 package com.customer.web.services;
 
-import com.customer.web.entity.Instructor;
+import com.customer.web.entity.web.Instructor;
 import com.customer.web.publishers.InstructorPublisher;
-import com.customer.web.repositories.InstructorRepository;
+import com.customer.web.repositories.web.InstructorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

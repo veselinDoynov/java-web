@@ -1,6 +1,6 @@
 package com.customer.web.instructor;
 
-import com.customer.web.entity.Instructor;
+import com.customer.web.entity.web.Instructor;
 import com.customer.web.services.InstructorService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;

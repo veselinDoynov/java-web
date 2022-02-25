@@ -1,6 +1,8 @@
-package com.customer.web.entity;
+package com.customer.web.entity.web;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.List;
@@ -23,7 +25,7 @@ public class Student {
 	@Column(name="email")
 	private String email;
 	
-	@ManyToMany(fetch=FetchType.LAZY,
+	@ManyToMany(fetch=FetchType.EAGER,
 			cascade= {CascadeType.PERSIST, CascadeType.MERGE,
 			 CascadeType.DETACH, CascadeType.REFRESH})
 	@JoinTable(
@@ -32,6 +34,7 @@ public class Student {
 			inverseJoinColumns=@JoinColumn(name="course_id")
 			)
 	@JsonIgnore
+	@Fetch(value = FetchMode.SUBSELECT)
 	private List<Course> courses;
 
 	@Transient

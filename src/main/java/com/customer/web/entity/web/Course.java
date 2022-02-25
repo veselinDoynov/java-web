@@ -1,6 +1,9 @@
-package com.customer.web.entity;
+package com.customer.web.entity.web;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,17 +20,18 @@ public class Course {
 	@Column(name="title")
 	private String title;
 
-	@ManyToOne(fetch=FetchType.LAZY, cascade= {CascadeType.PERSIST, CascadeType.MERGE,
+	@ManyToOne(fetch=FetchType.EAGER, cascade= {CascadeType.PERSIST, CascadeType.MERGE,
 			CascadeType.DETACH, CascadeType.REFRESH})
 	@JoinColumn(name="instructor_id")
 	@JsonIgnore
 	private Instructor instructor;
 
-	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
 	@JoinColumn(name="course_id")
+	@Fetch(value = FetchMode.SUBSELECT)
 	private List<Review> reviews;
 
-	@ManyToMany(fetch=FetchType.LAZY,
+	@ManyToMany(fetch=FetchType.EAGER,
 			cascade= {CascadeType.PERSIST, CascadeType.MERGE,
 					CascadeType.DETACH, CascadeType.REFRESH})
 	@JoinTable(
@@ -35,6 +39,7 @@ public class Course {
 			joinColumns=@JoinColumn(name="course_id"),
 			inverseJoinColumns=@JoinColumn(name="student_id")
 	)
+	@Fetch(value = FetchMode.SUBSELECT)
 	private List<Student> students;
 
 

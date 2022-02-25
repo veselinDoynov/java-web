@@ -1,9 +1,8 @@
 package com.customer.web.controllers;
 
 import com.customer.web.controllers.exception.CustomNotFoundException;
-import com.customer.web.entity.Course;
-import com.customer.web.entity.Instructor;
-import com.customer.web.entity.Student;
+import com.customer.web.entity.web.Course;
+import com.customer.web.entity.web.Instructor;
 import com.customer.web.services.CourseService;
 import com.customer.web.services.InstructorService;
 import org.springframework.beans.factory.annotation.Autowired;

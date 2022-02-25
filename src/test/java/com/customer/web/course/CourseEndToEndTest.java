@@ -1,7 +1,7 @@
 package com.customer.web.course;
 
-import com.customer.web.entity.Course;
-import com.customer.web.entity.Instructor;
+import com.customer.web.entity.web.Course;
+import com.customer.web.entity.web.Instructor;
 import com.customer.web.services.CourseService;
 import com.customer.web.services.InstructorService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,7 +21,6 @@ import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

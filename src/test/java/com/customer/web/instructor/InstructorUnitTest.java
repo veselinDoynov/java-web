@@ -1,7 +1,7 @@
 package com.customer.web.instructor;
 
-import com.customer.web.entity.Instructor;
-import com.customer.web.repositories.InstructorRepository;
+import com.customer.web.entity.web.Instructor;
+import com.customer.web.repositories.web.InstructorRepository;
 import com.customer.web.services.InstructorService;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;

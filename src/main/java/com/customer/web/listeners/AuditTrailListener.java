@@ -1,6 +1,6 @@
 package com.customer.web.listeners;
 
-import com.customer.web.entity.Instructor;
+import com.customer.web.entity.web.Instructor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

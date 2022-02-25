@@ -1,8 +1,7 @@
 package com.customer.web.services;
 
-import com.customer.web.entity.Course;
-import com.customer.web.entity.Student;
-import com.customer.web.repositories.CourseRepository;
+import com.customer.web.entity.web.Course;
+import com.customer.web.repositories.web.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

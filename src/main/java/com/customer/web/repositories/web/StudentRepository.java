@@ -1,7 +1,7 @@
-package com.customer.web.repositories;
+package com.customer.web.repositories.web;
 
-import com.customer.web.entity.Course;
-import com.customer.web.entity.Student;
+import com.customer.web.entity.web.Course;
+import com.customer.web.entity.web.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

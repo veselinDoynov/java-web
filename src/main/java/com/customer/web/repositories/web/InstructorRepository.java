@@ -1,6 +1,6 @@
-package com.customer.web.repositories;
+package com.customer.web.repositories.web;
 
-import com.customer.web.entity.Instructor;
+import com.customer.web.entity.web.Instructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

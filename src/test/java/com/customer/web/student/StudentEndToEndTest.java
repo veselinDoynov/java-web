@@ -1,10 +1,8 @@
 package com.customer.web.student;
 
-import com.customer.web.entity.Course;
-import com.customer.web.entity.Instructor;
-import com.customer.web.entity.Student;
+import com.customer.web.entity.web.Course;
+import com.customer.web.entity.web.Student;
 import com.customer.web.services.CourseService;
-import com.customer.web.services.InstructorService;
 import com.customer.web.services.StudentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
