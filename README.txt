@@ -5,4 +5,9 @@
 5. open mysql on the exposed port (MYSQLDB_LOCAL_PORT)
 6. create db from sql-scripts/instructor-export.sql
 7. Endpoints: in postman-collection folder
+8. Features/Technologies examined:
+
+
+
+Job Dashboard on: http://localhost:8000/dashboard/jobs
 
