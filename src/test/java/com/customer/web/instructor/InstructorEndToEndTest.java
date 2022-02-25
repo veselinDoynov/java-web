@@ -1,6 +1,8 @@
 package com.customer.web.instructor;
 
+import com.customer.web.entity.web.Course;
 import com.customer.web.entity.web.Instructor;
+import com.customer.web.services.CourseService;
 import com.customer.web.services.InstructorService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
@@ -16,6 +18,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.criteria.CriteriaBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,10 +44,19 @@ public class InstructorEndToEndTest {
     @Autowired
     private InstructorService instructorService;
 
+    @Autowired
+    private CourseService courseService;
+
     public String BASE_URL = "/api/v1/instructor";
 
     @Test
     public void listInstructorsWithCourses() throws Exception {
+
+        Instructor instructor = new Instructor("ins", "struc", "tor@dot.com");
+        Course course = new Course("some new test course in list instructor");
+        course = courseService.saveCourse(course);
+        instructor.add(course);
+        instructor = instructorService.saveInstructor(instructor);
 
         this.mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/?hasCourses=1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -46,6 +65,9 @@ public class InstructorEndToEndTest {
 
     @Test
     public void listInstructorsWithoutCourses() throws Exception {
+        Instructor instructor = new Instructor("ins", "struc", "tor@dot.com");
+        instructor.setCourses(null);
+        instructor = instructorService.saveInstructor(instructor);
 
         this.mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/?hasCourses=0")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -64,13 +86,15 @@ public class InstructorEndToEndTest {
     @Test
     public void getInstructorByName() throws Exception {
 
-        String name = "ve";
+        Instructor instructor = new Instructor("instructor", "Dodo", "inst@tor.com");
+        instructorService.saveInstructor(instructor);
+        String name = "tructor";
         this.mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/name/{firstName}", name)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName", is("Veselin")))
-                .andExpect(jsonPath("$.lastName", is("Doinov")))
-                .andExpect(jsonPath("$.email", is("veselin_doynov@abv.bg")))
+                .andExpect(jsonPath("$.firstName", is(instructor.getFirstName())))
+                .andExpect(jsonPath("$.lastName", is(instructor.getLastName())))
+                .andExpect(jsonPath("$.email", is(instructor.getEmail())))
         ;
     }
 
@@ -100,8 +124,8 @@ public class InstructorEndToEndTest {
 
     @Test
     public void updateInstructor() throws Exception {
-        String name = "ve";
-        Instructor instructor = instructorService.getByName(name);
+        Instructor instructor = new Instructor("instructor", "Dodo", "inst@tor.com");
+        instructorService.saveInstructor(instructor);
         String firstNameUpdated = "Updated first name";
         String postData = "{\"firstName\":\"" + firstNameUpdated + "\"}";
 
@@ -118,8 +142,7 @@ public class InstructorEndToEndTest {
 
     @Test
     public void updateInstructorNotFound() throws Exception {
-        String name = "ve";
-        Instructor instructor = instructorService.getByName(name);
+
         String firstNameUpdated = "Updated first name";
         String postData = "{\"firstName\":\"" + firstNameUpdated + "\"}";
 
@@ -132,8 +155,8 @@ public class InstructorEndToEndTest {
 
     @Test
     public void updateInstructorBadRequest() throws Exception {
-        String name = "ve";
-        Instructor instructor = instructorService.getByName(name);
+        Instructor instructor = new Instructor("instructor", "Dodo", "inst@tor.com");
+        instructorService.saveInstructor(instructor);
         String firstNameUpdated = "Updated first name";
         String postData = "{\"firstName\":\"" + firstNameUpdated + "\"}";
 
@@ -146,8 +169,8 @@ public class InstructorEndToEndTest {
 
     @Test
     public void deleteInstructor() throws Exception {
-        String name = "ve";
-        Instructor instructor = instructorService.getByName(name);
+        Instructor instructor = new Instructor("instructor", "Dodo", "inst@tor.com");
+        instructorService.saveInstructor(instructor);
         this.mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/{id}", instructor.getId()))
                 .andExpect(status().isOk())
         ;

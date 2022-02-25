@@ -50,7 +50,9 @@ public class CourseEndToEndTest {
         Course courseTwo = courseService.saveCourse(new Course("some custom course 2"));
         this.mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+
+        ;
     }
 
     @Test
