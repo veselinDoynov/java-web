@@ -15,7 +15,7 @@
     jpa data,
     tests(end to end, unit),
     event/listeners,
-    queue jobs (memory storage),
+    queue jobs (database storage),
     mysql in docker container,
     custom logging,
     custom exception handler (global with @ControllerAdvice)
