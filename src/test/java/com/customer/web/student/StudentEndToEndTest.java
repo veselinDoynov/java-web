@@ -6,6 +6,7 @@ import com.customer.web.services.CourseService;
 import com.customer.web.services.StudentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,6 +132,9 @@ public class StudentEndToEndTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(postData)))
                 .andExpect(status().isOk());
+        student = this.studentService.findStudentById(student.getId());
+        String customCourse = (String) student.getCustomCourse().get(0);
+        Assertions.assertNotNull( customCourse.indexOf(course.getTitle()));
     }
 
     @Test
