@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name="course", schema = "java-instructor")
+@Table(name="course")
 public class Course {
 
 	@Id

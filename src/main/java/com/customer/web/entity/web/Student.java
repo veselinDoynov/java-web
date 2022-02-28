@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name="student", schema = "java-instructor")
+@Table(name="student")
 public class Student {
 
 	@Id

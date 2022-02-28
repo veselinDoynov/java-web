@@ -1,5 +1,7 @@
 package com.customer.web.instructor;
 
+import com.customer.web.WebApplication;
+import com.customer.web.config.TestPersistenceConfiguration;
 import com.customer.web.entity.web.Course;
 import com.customer.web.entity.web.Instructor;
 import com.customer.web.services.CourseService;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -19,22 +22,18 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @RunWith(SpringRunner.class)
-@SpringBootTest
+
 @AutoConfigureMockMvc
-@EnableTransactionManagement
-@Transactional("webTransactionManager")
-@TestPropertySource(properties = {
-        "org.jobrunr.background-job-server.enabled=false",
-        "org.jobrunr.dashboard.enabled=false",
-})
+@SpringBootTest(classes = {
+        WebApplication.class,
+        TestPersistenceConfiguration.class})
+@ActiveProfiles("test")
 public class InstructorEndToEndTest {
 
     @Autowired
@@ -51,7 +50,7 @@ public class InstructorEndToEndTest {
     @Test
     public void listInstructorsWithCourses() throws Exception {
 
-        Instructor instructor = new Instructor("ins", "struc", "tor@dot.com");
+        Instructor instructor = new Instructor("zns", "struc", "tor@dot.com");
         Course course = new Course("some new test course in list instructor");
         instructor = instructorService.saveInstructor(instructor);
         course.setInstructor(instructor);
@@ -61,8 +60,10 @@ public class InstructorEndToEndTest {
         this.mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/?hasCourses=1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                //.andExpect(jsonPath("$.*", hasItem(instructor)))
-
+                .andExpect(jsonPath("$[0].id").value(instructor.getId()))
+                .andExpect(jsonPath("$[0].email").value(instructor.getEmail()))
+                .andExpect(jsonPath("$[0].firstName").value(instructor.getFirstName()))
+                .andExpect(jsonPath("$[0].lastName").value(instructor.getLastName()))
         ;
     }
 
