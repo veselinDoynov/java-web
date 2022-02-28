@@ -3,9 +3,13 @@ package com.customer.web.config;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.jobrunr.configuration.JobRunr;
 import org.jobrunr.jobs.mappers.JobMapper;
+import org.jobrunr.scheduling.JobScheduler;
+import org.jobrunr.server.JobActivator;
 import org.jobrunr.storage.InMemoryStorageProvider;
 import org.jobrunr.storage.StorageProvider;
 import org.jobrunr.storage.sql.common.DefaultSqlStorageProvider;
+import org.jobrunr.storage.sql.common.SqlStorageProviderFactory;
+import org.jobrunr.storage.sql.mariadb.MariaDbStorageProvider;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,12 +35,7 @@ public class QueueConfiguration {
     @Bean
     public StorageProvider storageProvider(JobMapper jobMapper) {
 
-        JobRunr.configure()
-                .useStorageProvider(new DefaultSqlStorageProvider(queueDataSource(), DefaultSqlStorageProvider.DatabaseOptions.SKIP_CREATE))
-                .useBackgroundJobServer()
-                .initialize();
-
-        InMemoryStorageProvider storageProvider = new InMemoryStorageProvider();
+        MariaDbStorageProvider storageProvider = new MariaDbStorageProvider(queueDataSource());
         storageProvider.setJobMapper(jobMapper);
         return storageProvider;
     }

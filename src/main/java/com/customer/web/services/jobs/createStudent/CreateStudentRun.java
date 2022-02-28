@@ -16,7 +16,7 @@ public class CreateStudentRun {
     @Autowired
     private StudentService studentService;
 
-    @Job(name = "Create a dummy student")
+    @Job(name = "Create a dummy student", retries = 3)
     public void execute(String message, int jobId) {
         System.out.println("Job: " + message);
 

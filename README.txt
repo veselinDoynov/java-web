@@ -3,9 +3,10 @@
 3. install docker
 4. run docker compose up -d
 5. open mysql on the exposed port (MYSQLDB_LOCAL_PORT)
-6. create db from sql-scripts/instructor-export.sql
-7. Endpoints: in postman-collection/Java.postman_collection.json
-8. Features/Technologies examined:
+6. with root user execute sql-scripts/instructor-export.sql
+7. with root user execute sql-scripts/instructor-version.sql
+8. Endpoints: in postman-collection/Java.postman_collection.json
+9. Features/Technologies examined:
 
     Spring boot (maven project),
     hibernate,
@@ -20,5 +21,5 @@
     custom logging,
     custom exception handler (global with @ControllerAdvice)
 
-Job Dashboard on: http://localhost:8000/dashboard/jobs
+10. Job Dashboard on: http://localhost:8000/dashboard/jobs
 
