@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 import java.util.HashMap;
 
-@PropertySource({"classpath:instructor-mysql.properties"})
 @Configuration
 @EnableJpaRepositories(
         basePackages = "com.customer.web.repositories.web",
