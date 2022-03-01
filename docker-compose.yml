@@ -15,5 +15,7 @@ services:
         - $MYSQLDB_LOCAL_PORT
     volumes:
       - db:/var/lib/mysql
+      - ./sql-script:/docker-entrypoint-initdb.d/sql-script
+
 volumes:
   db:
