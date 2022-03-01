@@ -53,7 +53,7 @@ public class VersionPersistenceConfiguration {
         builder.url(dotenv.get("MYSQLDB_URL") + dotenv.get("MYSQLDB_HOST") + ":" + dotenv.get("MYSQLDB_LOCAL_PORT") + "/" + dotenv.get("MYSQLDB_DATABASE_VERSION"));
         builder.username(dotenv.get("MYSQLDB_ROOT_USER"));
         builder.password(dotenv.get("MYSQLDB_PASSWORD"));
-        System.out.println("My custom datasource bean has been initialized and set");
+        System.out.println("Version database connection started...");
         return builder.build();
     }
 

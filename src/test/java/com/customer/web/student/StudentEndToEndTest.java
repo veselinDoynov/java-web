@@ -1,5 +1,7 @@
 package com.customer.web.student;
 
+import com.customer.web.WebApplication;
+import com.customer.web.config.TestPersistenceConfiguration;
 import com.customer.web.entity.web.Course;
 import com.customer.web.entity.web.Student;
 import com.customer.web.services.CourseService;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -30,14 +33,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(SpringExtension.class)
 @RunWith(SpringRunner.class)
-@SpringBootTest
 @AutoConfigureMockMvc
-@EnableTransactionManagement
-@Transactional("webTransactionManager")
-@TestPropertySource(properties = {
-        "org.jobrunr.background-job-server.enabled=false",
-        "org.jobrunr.dashboard.enabled=false",
-})
+@SpringBootTest(classes = {
+        WebApplication.class,
+        TestPersistenceConfiguration.class})
+@ActiveProfiles("test")
+@Transactional("testTransactionManager")
 public class StudentEndToEndTest {
 
     @Autowired

@@ -28,12 +28,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(SpringExtension.class)
 @RunWith(SpringRunner.class)
-
 @AutoConfigureMockMvc
 @SpringBootTest(classes = {
         WebApplication.class,
         TestPersistenceConfiguration.class})
 @ActiveProfiles("test")
+@Transactional("testTransactionManager")
 public class InstructorEndToEndTest {
 
     @Autowired
@@ -52,9 +52,10 @@ public class InstructorEndToEndTest {
 
         Instructor instructor = new Instructor("zns", "struc", "tor@dot.com");
         Course course = new Course("some new test course in list instructor");
+
         instructor = instructorService.saveInstructor(instructor);
         course.setInstructor(instructor);
-        course = courseService.saveCourse(course);
+        courseService.saveCourse(course);
 
 
         this.mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/?hasCourses=1")
