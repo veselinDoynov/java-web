@@ -20,6 +20,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
+
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -48,42 +50,34 @@ public class InstructorEndToEndTest {
     @Test
     public void listInstructorsWithCourses() throws Exception {
 
-        Instructor instructor = new Instructor("zns", "struc", "tor@dot.com");
-        Course course = new Course("some new test course in list instructor");
-
-        instructor = instructorService.saveInstructor(instructor);
-        course.setInstructor(instructor);
-        courseService.saveCourse(course);
-
+        setUpInstructors();
 
         this.mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/?hasCourses=1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(instructor.getId()))
-                .andExpect(jsonPath("$[0].email").value(instructor.getEmail()))
-                .andExpect(jsonPath("$[0].firstName").value(instructor.getFirstName()))
-                .andExpect(jsonPath("$[0].lastName").value(instructor.getLastName()))
-        ;
+                .andExpect(jsonPath("$", hasSize(1)));
     }
 
     @Test
     public void listInstructorsWithoutCourses() throws Exception {
-        Instructor instructor = new Instructor("ins", "struc", "tor@dot.com");
-        instructor.setCourses(null);
-        instructor = instructorService.saveInstructor(instructor);
+
+        setUpInstructors();
 
         this.mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/?hasCourses=0")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)));
 
     }
 
     @Test
     public void listInstructorsAll() throws Exception {
 
+        setUpInstructors();
         this.mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(3)));
     }
 
     @Test
@@ -97,8 +91,7 @@ public class InstructorEndToEndTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName", is(instructor.getFirstName())))
                 .andExpect(jsonPath("$.lastName", is(instructor.getLastName())))
-                .andExpect(jsonPath("$.email", is(instructor.getEmail())))
-        ;
+                .andExpect(jsonPath("$.email", is(instructor.getEmail())));
     }
 
     @Test
@@ -193,7 +186,7 @@ public class InstructorEndToEndTest {
         ;
     }
 
-    public static String asJsonString(final Object obj) {
+    private static String asJsonString(final Object obj) {
         try {
             final ObjectMapper mapper = new ObjectMapper();
             final String jsonContent = mapper.writeValueAsString(obj);
@@ -201,5 +194,23 @@ public class InstructorEndToEndTest {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void setUpInstructors() {
+
+        Instructor instructor = new Instructor("zns", "struc", "tor@dot.com");
+        Course course = new Course("some new test course in list instructor");
+
+        instructor = instructorService.saveInstructor(instructor);
+        course.setInstructor(instructor);
+        courseService.saveCourse(course);
+
+        Instructor instructorTwo = new Instructor("ins", "struc", "tor@dot.com");
+        instructorTwo.setCourses(null);
+        instructorService.saveInstructor(instructorTwo);
+
+        Instructor instructorTree = new Instructor("ins", "struc", "tor@dot.com");
+        instructorTree.setCourses(null);
+        instructorService.saveInstructor(instructorTree);
     }
 }

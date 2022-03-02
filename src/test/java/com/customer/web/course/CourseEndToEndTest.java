@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -60,8 +61,7 @@ public class CourseEndToEndTest {
         this.mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-
-        ;
+                .andExpect(jsonPath("$", hasSize(2)));
     }
 
     @Test
