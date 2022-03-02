@@ -24,7 +24,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -73,6 +75,22 @@ public class StudentEndToEndTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email", is(student.getEmail())));
+    }
+
+    @Test
+    public void getStudentWithCourse() throws Exception {
+
+        Student student =  new Student("Student", "Javarov", "stu@dent.com");
+        Course course = new Course("Course for Javarov");
+        student = studentService.saveStudent(student);
+        course = courseService.saveCourse(course);
+        studentService.attachCourseToStudent(course.getId(), student.getId());
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{id}", student.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email", is(student.getEmail())))
+                .andExpect(jsonPath("$.customCourse", hasSize(1)));
     }
 
     @Test
