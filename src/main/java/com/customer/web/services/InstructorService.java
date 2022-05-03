@@ -1,7 +1,7 @@
 package com.customer.web.services;
 
 import com.customer.web.entity.web.Instructor;
-import com.customer.web.entity.web.InstructorTransformed;
+import com.customer.web.entity.web.transformed.InstructorTransformed;
 import com.customer.web.publishers.InstructorPublisher;
 import com.customer.web.repositories.web.InstructorRepository;
 import com.customer.web.services.jobs.ExampleJobScheduleService;

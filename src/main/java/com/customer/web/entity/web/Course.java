@@ -1,5 +1,6 @@
 package com.customer.web.entity.web;
 
+import com.customer.web.entity.web.transformed.StudentTransformed;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -7,6 +8,8 @@ import org.hibernate.annotations.FetchMode;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Entity
 @Table(name="course")
@@ -96,6 +99,16 @@ public class Course {
 
 	public List<Student> getStudents() {
 		return students;
+	}
+
+	public List<StudentTransformed> getStudentsTransformed() {
+
+		if(students == null || students.isEmpty()) {
+			return null;
+		}
+		return students.stream().map(student -> {
+			return new StudentTransformed(student);
+		}).collect(Collectors.toList());
 	}
 
 	public void setStudents(List<Student> students) {

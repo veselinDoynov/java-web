@@ -1,7 +1,7 @@
 package com.customer.web.transformers;
 
 import com.customer.web.entity.web.Instructor;
-import com.customer.web.entity.web.InstructorTransformed;
+import com.customer.web.entity.web.transformed.InstructorTransformed;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;

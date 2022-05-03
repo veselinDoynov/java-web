@@ -2,7 +2,7 @@ package com.customer.web.controllers;
 
 import com.customer.web.controllers.exception.CustomNotFoundException;
 import com.customer.web.entity.web.Instructor;
-import com.customer.web.entity.web.InstructorTransformed;
+import com.customer.web.entity.web.transformed.InstructorTransformed;
 import com.customer.web.services.InstructorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

@@ -1,5 +1,6 @@
 package com.customer.web.entity.web;
 
+import com.customer.web.entity.web.transformed.CourseTransformed;
 import com.customer.web.listeners.AuditTrailListener;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -7,6 +8,7 @@ import org.hibernate.annotations.FetchMode;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name="instructor")
@@ -95,6 +97,15 @@ public class Instructor {
 
 	public List<Course> getCourses() {
 		return courses;
+	}
+
+	public List<CourseTransformed> getCoursesTransformed() {
+		if(courses == null || courses.isEmpty()) {
+			return null;
+		}
+		return courses.stream().map( course -> {
+			return new CourseTransformed(course);
+		}).collect(Collectors.toList());
 	}
 
 	public void setCourses(List<Course> courses) {
