@@ -1,9 +1,11 @@
 package com.customer.web.services;
 
 import com.customer.web.entity.web.Instructor;
+import com.customer.web.entity.web.InstructorTransformed;
 import com.customer.web.publishers.InstructorPublisher;
 import com.customer.web.repositories.web.InstructorRepository;
 import com.customer.web.services.jobs.ExampleJobScheduleService;
+import com.customer.web.transformers.InstructorTransformer;
 import org.jobrunr.scheduling.JobScheduler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,10 +30,20 @@ public class InstructorService {
     @Autowired
     private ExampleJobScheduleService exampleJobService;
 
+    @Autowired
+    private InstructorTransformer instructorTransformer;
+
     public Collection<Instructor> getOrderedInstructors() {
 
         Collection<Instructor> instructors = instructorRepository.getOrderedInstructors();
         instructorPublisher.publishInstructorList(instructors.toString());
+
+        return instructors;
+    }
+
+    public Collection <InstructorTransformed> getInstructorsStream() {
+
+        Collection <InstructorTransformed> instructors = instructorTransformer.getOrdered(instructorRepository.getInstructors());
 
         return instructors;
     }

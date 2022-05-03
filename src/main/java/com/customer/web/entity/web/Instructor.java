@@ -109,6 +109,10 @@ public class Instructor {
 
 		courses.add(tempCourse);
 	}
+
+	public String getInstructorDetails() {
+		return  this.getFirstName() + " " + this.getLastName() + " with email : " + this.getEmail();
+	}
 }
 
 
