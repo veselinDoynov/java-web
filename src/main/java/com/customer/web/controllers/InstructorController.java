@@ -4,6 +4,7 @@ import com.customer.web.controllers.exception.CustomNotFoundException;
 import com.customer.web.entity.web.Instructor;
 import com.customer.web.entity.web.transformed.InstructorTransformed;
 import com.customer.web.services.InstructorService;
+import com.customer.web.transformers.InstructorTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,9 @@ public class InstructorController {
     @Autowired
     private InstructorService instructorService;
 
+    @Autowired
+    private InstructorTransformer instructorTransformer;
+
     @GetMapping
     public Collection<Instructor> list(@RequestParam(required = false) Boolean hasCourses) {
         if (hasCourses != null) {
@@ -26,10 +30,15 @@ public class InstructorController {
     }
 
     @GetMapping
-    @RequestMapping("/stream")
-    public Collection<InstructorTransformed> listStream() {
+    @RequestMapping("/transformed")
+    public Collection<InstructorTransformed> listTransformed(@RequestParam(required = false) Boolean hasCourses) {
 
-        return instructorService.getInstructorsStream();
+        Collection<Instructor> instructors = instructorService.getOrderedInstructors();
+
+        if (hasCourses != null) {
+            return instructorTransformer.transform(instructors, hasCourses ? "Yes" : "No");
+        }
+        return instructorTransformer.transform(instructors, null);
     }
 
     @GetMapping

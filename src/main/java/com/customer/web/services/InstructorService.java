@@ -30,20 +30,10 @@ public class InstructorService {
     @Autowired
     private ExampleJobScheduleService exampleJobService;
 
-    @Autowired
-    private InstructorTransformer instructorTransformer;
-
     public Collection<Instructor> getOrderedInstructors() {
 
         Collection<Instructor> instructors = instructorRepository.getOrderedInstructors();
         instructorPublisher.publishInstructorList(instructors.toString());
-
-        return instructors;
-    }
-
-    public Collection <InstructorTransformed> getInstructorsStream() {
-
-        Collection <InstructorTransformed> instructors = instructorTransformer.getOrdered(instructorRepository.getInstructors());
 
         return instructors;
     }
