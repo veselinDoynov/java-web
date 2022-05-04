@@ -21,6 +21,12 @@ public class InstructorTransformer {
 
         Stream <Instructor> instructorStream = instructors.stream();
 
+        Stream <String> stringStream = Stream.of("asd", "bdffd", "asa");
+
+        stringStream.sorted( (s1, s2) -> s1.compareTo(s2)).forEach(System.out::println);
+
+        stringStream.sorted(Comparator.comparingInt(s -> s.charAt(0))).forEach(System.out::println);
+
         return addTransformation(
                 addSorting(
                         addFilter(hasCourses, instructorStream)
