@@ -22,9 +22,8 @@ public class InstructorTransformer {
         Stream<InstructorTransformed> instructorTransformedStream = instructors.stream()
                 .sorted(Comparator.comparing(instructor -> {
                     List <Course> courseList = instructor.getCourses();
-                    if(courseList == null) {
-                        courseList = new ArrayList<>();
-                    }
+                    courseList = courseList == null ? new ArrayList<>() : courseList;
+                    
                     return courseList.stream().count();
                 }))
                 .map(instructor -> {
