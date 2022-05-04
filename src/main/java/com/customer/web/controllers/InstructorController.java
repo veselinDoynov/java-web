@@ -35,10 +35,6 @@ public class InstructorController {
 
         Collection<Instructor> instructors = instructorService.getOrderedInstructors();
 
-        instructors.stream().forEach(instructor -> {
-            System.out.println(instructor.getCourses());
-        });
-
         if (hasCourses != null) {
             return instructorTransformer.transform(instructors, hasCourses ? "Yes" : "No");
         }
