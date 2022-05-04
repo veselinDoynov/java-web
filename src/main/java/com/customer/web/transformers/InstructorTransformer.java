@@ -19,20 +19,20 @@ public class InstructorTransformer {
 
     public Collection<InstructorTransformed> transform(Collection<Instructor> instructors, String hasCourses) {
 
-        Stream<InstructorTransformed> instructorTransformedStream = instructors.stream()
-                .sorted(Comparator.comparing(instructor -> {
-                    List <Course> courseList = instructor.getCourses();
-                    courseList = courseList == null ? new ArrayList<>() : courseList;
-                    
-                    return courseList.stream().count();
-                }))
-                .map(instructor -> {
-                    return new InstructorTransformed(instructor);
-                });
+        Stream <Instructor> instructorStream = instructors.stream();
+
+        return addTransformation(
+                addSorting(
+                        addFilter(hasCourses, instructorStream)
+                )
+        ).collect(Collectors.toList());
+    }
+
+    public Stream <Instructor> addFilter(String hasCourses, Stream <Instructor> instructorStream) {
 
         if (hasCourses != null) {
-            Predicate <InstructorTransformed> filter = instructor -> {
-                List <CourseTransformed> courseList = instructor.getCourses();
+            Predicate <Instructor> filter = instructor -> {
+                List <Course> courseList = instructor.getCourses();
 
                 if(hasCourses == "Yes") {
                     return courseList != null && !courseList.isEmpty();
@@ -40,10 +40,27 @@ public class InstructorTransformer {
                     return courseList == null || courseList.isEmpty();
                 }
             };
-
-            instructorTransformedStream = instructorTransformedStream.filter(filter);
+            return instructorStream.filter(filter);
         }
 
-        return instructorTransformedStream.collect(Collectors.toList());
+        return instructorStream;
+    }
+
+    public Stream <Instructor> addSorting(Stream <Instructor> instructorStream) {
+
+        return instructorStream
+                .sorted(Comparator.comparing(instructor -> {
+                    List <Course> courseList = instructor.getCourses();
+                    courseList = courseList == null ? new ArrayList<>() : courseList;
+
+                    return courseList.stream().count();
+                }));
+    }
+
+    public Stream <InstructorTransformed> addTransformation(Stream <Instructor> instructorStream) {
+
+        return instructorStream.map(instructor -> {
+            return new InstructorTransformed(instructor);
+        });
     }
 }
