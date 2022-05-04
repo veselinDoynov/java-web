@@ -6,6 +6,7 @@ import com.customer.web.entity.web.transformed.CourseTransformed;
 import com.customer.web.entity.web.transformed.InstructorTransformed;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -21,6 +22,9 @@ public class InstructorTransformer {
         Stream<InstructorTransformed> instructorTransformedStream = instructors.stream()
                 .sorted(Comparator.comparing(instructor -> {
                     List <Course> courseList = instructor.getCourses();
+                    if(courseList == null) {
+                        courseList = new ArrayList<>();
+                    }
                     return courseList.stream().count();
                 }))
                 .map(instructor -> {

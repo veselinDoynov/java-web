@@ -21,6 +21,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -47,12 +49,25 @@ public class InstructorEndToEndTest {
 
     public String BASE_URL = "/api/v1/instructor";
 
+    public String BASE_URL_TRANSFORMED = "/api/v1/instructor/transformed";
+
     @Test
     public void listInstructorsWithCourses() throws Exception {
 
         setUpInstructors();
 
         this.mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/?hasCourses=1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
+    public void listInstructorsWithCoursesTransformed() throws Exception {
+
+        setUpInstructors();
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL_TRANSFORMED + "/?hasCourses=1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
@@ -71,10 +86,32 @@ public class InstructorEndToEndTest {
     }
 
     @Test
+    public void listInstructorsWithoutCoursesTransformed() throws Exception {
+
+        setUpInstructors();
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL_TRANSFORMED + "/?hasCourses=0")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)));
+
+    }
+
+    @Test
     public void listInstructorsAll() throws Exception {
 
         setUpInstructors();
         this.mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(3)));
+    }
+
+    @Test
+    public void listInstructorsAllTransformed() throws Exception {
+
+        setUpInstructors();
+        this.mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL_TRANSFORMED)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)));
@@ -204,13 +241,14 @@ public class InstructorEndToEndTest {
         instructor = instructorService.saveInstructor(instructor);
         course.setInstructor(instructor);
         courseService.saveCourse(course);
+        instructor.add(course);
 
         Instructor instructorTwo = new Instructor("ins", "struc", "tor@dot.com");
-        instructorTwo.setCourses(null);
+        instructorTwo.setCourses(new ArrayList<>());
         instructorService.saveInstructor(instructorTwo);
 
         Instructor instructorTree = new Instructor("ins", "struc", "tor@dot.com");
-        instructorTree.setCourses(null);
+        instructorTree.setCourses(new ArrayList<>());
         instructorService.saveInstructor(instructorTree);
     }
 }
