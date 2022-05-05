@@ -6,10 +6,7 @@ import com.customer.web.entity.web.transformed.CourseTransformed;
 import com.customer.web.entity.web.transformed.InstructorTransformed;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,6 +23,23 @@ public class InstructorTransformer {
         stringStream.sorted( (s1, s2) -> s1.compareTo(s2)).forEach(System.out::println);
 
         stringStream.sorted(Comparator.comparingInt(s -> s.charAt(0))).forEach(System.out::println);
+
+        Stream <Instructor> instructorStream2 = instructors.stream();
+
+        Map<String, List<Instructor>> result =  instructorStream2
+                .filter(instructor -> instructor.getCourses() != null && !instructor.getCourses().isEmpty())
+                .sorted(Comparator.comparing((Instructor instructor) -> {
+                    List <Course> courseList = instructor.getCourses();
+                    courseList = courseList == null ? new ArrayList<>() : courseList;
+
+                    return courseList.stream().count();
+                }).reversed())
+                .collect(Collectors.groupingBy(instructor -> {
+                    return String.join("," ,instructor.getCourses().stream().map(Course::getTitle).collect(Collectors.toList()));
+
+                }));
+        System.out.println("Grouped");
+        System.out.println(result);
 
         return addTransformation(
                 addSorting(
