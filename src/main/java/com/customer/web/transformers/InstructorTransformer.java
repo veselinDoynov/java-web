@@ -29,7 +29,7 @@ public class InstructorTransformer {
         if (hasCourses != null) {
             Predicate <Instructor> filter = instructor ->  {
                 List <Course> courseList = Optional.of(instructor.getCourses()).orElse(Collections.emptyList());
-                return hasCourses == "Yes" ? !courseList.isEmpty() : courseList.isEmpty();
+                return "Yes".equals(hasCourses) ? !courseList.isEmpty() : courseList.isEmpty();
             };
             return instructorStream.filter(filter);
         }
