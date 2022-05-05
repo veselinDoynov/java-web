@@ -20,20 +20,16 @@ public class InstructorTransformer {
 
         Stream <String> stringStream = Stream.of("asd", "bdffd", "asa");
 
-        stringStream.sorted( (s1, s2) -> s1.compareTo(s2)).forEach(System.out::println);
+        //stringStream.sorted( (s1, s2) -> s1.compareTo(s2)).forEach(System.out::println);
 
         stringStream.sorted(Comparator.comparingInt(s -> s.charAt(0))).forEach(System.out::println);
 
         Stream <Instructor> instructorStream2 = instructors.stream();
 
         Map<String, List<Instructor>> result =  instructorStream2
-                .filter(instructor -> instructor.getCourses() != null && !instructor.getCourses().isEmpty())
-                .sorted(Comparator.comparing((Instructor instructor) -> {
-                    List <Course> courseList = instructor.getCourses();
-                    courseList = courseList == null ? new ArrayList<>() : courseList;
-
-                    return courseList.stream().count();
-                }).reversed())
+                .filter(instructor -> !Optional.of(instructor.getCourses()).orElse(Collections.emptyList()).isEmpty())
+                .sorted(Comparator.comparing(
+                        (Instructor instructor) -> Optional.of(instructor.getCourses()).orElse(Collections.emptyList()).size()).reversed())
                 .collect(Collectors.groupingBy(instructor -> {
                     return String.join("," ,instructor.getCourses().stream().map(Course::getTitle).collect(Collectors.toList()));
 
