@@ -16,12 +16,9 @@ public class InstructorTransformer {
     public Collection<InstructorTransformed> transform(Collection<Instructor> instructors, Boolean hasCourses) {
 
         Stream <Instructor> instructorStream = instructors.stream();
-
-        return addTransformation(
-                addSorting(
-                        addFilter(hasCourses, instructorStream)
-                )
-        ).collect(Collectors.toList());
+        instructorStream = addFilter(hasCourses, instructorStream);
+        instructorStream = addSorting(instructorStream);
+        return addTransformation(instructorStream).collect(Collectors.toList());
     }
 
     public Stream <Instructor> addFilter(Boolean hasCourses, Stream <Instructor> instructorStream) {
