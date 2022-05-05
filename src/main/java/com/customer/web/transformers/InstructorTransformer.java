@@ -2,14 +2,10 @@ package com.customer.web.transformers;
 
 import com.customer.web.entity.web.Course;
 import com.customer.web.entity.web.Instructor;
-import com.customer.web.entity.web.transformed.CourseTransformed;
 import com.customer.web.entity.web.transformed.InstructorTransformed;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -31,14 +27,9 @@ public class InstructorTransformer {
     public Stream <Instructor> addFilter(String hasCourses, Stream <Instructor> instructorStream) {
 
         if (hasCourses != null) {
-            Predicate <Instructor> filter = instructor -> {
-                List <Course> courseList = instructor.getCourses();
-
-                if(hasCourses == "Yes") {
-                    return courseList != null && !courseList.isEmpty();
-                } else {
-                    return courseList == null || courseList.isEmpty();
-                }
+            Predicate <Instructor> filter = instructor ->  {
+                List <Course> courseList = Optional.of(instructor.getCourses()).orElse(Collections.emptyList());
+                return hasCourses == "Yes" ? !courseList.isEmpty() : courseList.isEmpty();
             };
             return instructorStream.filter(filter);
         }
@@ -49,18 +40,11 @@ public class InstructorTransformer {
     public Stream <Instructor> addSorting(Stream <Instructor> instructorStream) {
 
         return instructorStream
-                .sorted(Comparator.comparing(instructor -> {
-                    List <Course> courseList = instructor.getCourses();
-                    courseList = courseList == null ? new ArrayList<>() : courseList;
-
-                    return courseList.stream().count();
-                }));
+                .sorted(Comparator.comparing(instructor -> Optional.of(instructor.getCourses()).orElse(Collections.emptyList()).size()));
     }
 
     public Stream <InstructorTransformed> addTransformation(Stream <Instructor> instructorStream) {
 
-        return instructorStream.map(instructor -> {
-            return new InstructorTransformed(instructor);
-        });
+        return instructorStream.map(instructor -> new InstructorTransformed(instructor));
     }
 }
