@@ -32,13 +32,7 @@ public class InstructorController {
     @GetMapping
     @RequestMapping("/transformed")
     public Collection<InstructorTransformed> listTransformed(@RequestParam(required = false) Boolean hasCourses) {
-
-        Collection<Instructor> instructors = instructorService.getOrderedInstructors();
-
-        if (hasCourses != null) {
-            return instructorTransformer.transform(instructors, hasCourses ? "Yes" : "No");
-        }
-        return instructorTransformer.transform(instructors, null);
+        return instructorTransformer.transform(instructorService.getOrderedInstructors(), hasCourses);
     }
 
     @GetMapping

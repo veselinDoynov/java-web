@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 @Component
 public class InstructorTransformer {
 
-    public Collection<InstructorTransformed> transform(Collection<Instructor> instructors, String hasCourses) {
+    public Collection<InstructorTransformed> transform(Collection<Instructor> instructors, Boolean hasCourses) {
 
         Stream <Instructor> instructorStream = instructors.stream();
 
@@ -24,12 +24,12 @@ public class InstructorTransformer {
         ).collect(Collectors.toList());
     }
 
-    public Stream <Instructor> addFilter(String hasCourses, Stream <Instructor> instructorStream) {
+    public Stream <Instructor> addFilter(Boolean hasCourses, Stream <Instructor> instructorStream) {
 
         if (hasCourses != null) {
             Predicate <Instructor> filter = instructor ->  {
                 List <Course> courseList = Optional.of(instructor.getCourses()).orElse(Collections.emptyList());
-                return "Yes".equals(hasCourses) ? !courseList.isEmpty() : courseList.isEmpty();
+                return hasCourses.equals(Boolean.TRUE) ?  !courseList.isEmpty() : courseList.isEmpty();
             };
             return instructorStream.filter(filter);
         }
@@ -45,6 +45,6 @@ public class InstructorTransformer {
 
     public Stream <InstructorTransformed> addTransformation(Stream <Instructor> instructorStream) {
 
-        return instructorStream.map(instructor -> new InstructorTransformed(instructor));
+        return instructorStream.map(InstructorTransformed::new);
     }
 }
