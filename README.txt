@@ -39,6 +39,7 @@ docker exec -i YOUR_MYSQL_CONTAINER_NAME_HERE bash -l -c "mysql -uroot -pYOUR_PA
     mysql in docker container,
     custom logging,
     custom exception handler (global with @ControllerAdvice)
+    implemented transformers as POC. In instructor controller in the call "listTransformed" transformer layer is implemented between the controller and the service. With Streams/lambdas and func interfaces the data is transformed
 
   Job Dashboard on: http://localhost:8000/dashboard/jobs
 
